@@ -3,10 +3,16 @@ pool:
   demands: maven
 
 steps:
+- task: ExtractFiles@1
+  inputs:
+    archiveFilePatterns: '*.zip'
+    destinationFolder: '$(Build.SourcesDirectory)'
+    cleanDestinationFolder: false
+    
 - task: Maven@3
   displayName: 'Maven gs-spring-boot-master/app/pom.xml'
   inputs:
-    mavenPomFile: 'pom.xml'
+    mavenPomFile: '$(System.DefaultWorkingDirectory)/{zip file name}/pipelines-java-function-master/pom.xml'
     codeCoverageToolOption: Cobertura
 
 - task: CopyFiles@2
