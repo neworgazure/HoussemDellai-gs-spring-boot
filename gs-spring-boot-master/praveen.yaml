@@ -1,0 +1,24 @@
+pool:
+  vmImage: 'ubuntu-latest' # Hosted Ubuntu 1604
+  demands: maven
+
+steps:
+- task: Maven@3
+  displayName: 'Maven gs-spring-boot-master/app/pom.xml'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    codeCoverageToolOption: Cobertura
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
